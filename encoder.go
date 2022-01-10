@@ -101,15 +101,7 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 	if vocabOpenErr != nil || encoderOpenErr != nil {
 		return nil, errors.New("failed to load prebuilt tokenizer")
 	}
-	encoderContents, err := f.ReadFile(encoderPath)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to read encoder file")
-	}
-	encoderMap := map[string]int64{}
-	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
-		return nil, errors.Wrap(err, "encoder file had invalid json")
-	}
-	//Rearrange these for consistency with above function
+
 	vocabContents, err := f.ReadFile(vocabPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read vocab file")
@@ -121,6 +113,15 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 		split := strings.Split(vocabScanner.Text(), " ")
 
 		bpeMerges = append(bpeMerges, [2]string{split[0], split[1]})
+	}
+
+	encoderContents, err := f.ReadFile(encoderPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to read encoder file")
+	}
+	encoderMap := map[string]int64{}
+	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
+		return nil, errors.Wrap(err, "encoder file had invalid json")
 	}
 
 	return New(encoderMap, bpeMerges)
