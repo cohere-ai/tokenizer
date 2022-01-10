@@ -109,7 +109,7 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
 		return nil, errors.Wrap(err, "encoder file had invalid json")
 	}
-
+	//Rearrange these for consistency with above function
 	vocabContents, err := f.ReadFile(vocabPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read vocab file")
@@ -127,11 +127,9 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 }
 
 func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
-	vocabSize := int64(0)
 	decoder := map[int64]string{}
 	for k, v := range encoder {
 		decoder[v] = k
-		vocabSize++
 	}
 
 	bpeRanks := map[[2]string]int64{}
@@ -144,7 +142,7 @@ func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
 		Decoder:   decoder,
 		BPERanks:  bpeRanks,
 		Cache:     map[string]string{},
-		VocabSize: vocabSize,
+		VocabSize: int64(len(encoder)),
 	}, nil
 }
 
@@ -159,7 +157,6 @@ func getPairs(wordPieces []string) [][2]string {
 		pairs = append(pairs, [2]string{prevChar, wordPiece})
 		prevChar = wordPiece
 	}
-
 	return pairs
 }
 
@@ -210,7 +207,7 @@ func (e *Encoder) BPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) EncodeWords(words []string) []int64 {
+func (e *Encoder) encodeWords(words []string) []int64 {
 	bpeTokens := []int64{}
 
 	for _, word := range words {
@@ -227,8 +224,8 @@ func (e *Encoder) EncodeWords(words []string) []int64 {
 }
 
 func (e *Encoder) Encode(text string) []int64 {
-	words := WordSplit(text)
-	return e.EncodeWords(words)
+	words := wordSplit(text)
+	return e.encodeWords(words)
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
@@ -257,7 +254,7 @@ func unicodeEncode(word string) string {
 	return word
 }
 
-func WordSplit(s string) []string {
+func wordSplit(s string) []string {
 	results := make([]string, 0)
 	wordsMatch, _ := splitRegex.FindStringMatch(s)
 	if wordsMatch == nil {
@@ -291,14 +288,17 @@ func runeContains(bs []int, b int) bool {
 
 func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	bs := []int{}
-	for i := 33; i < 127; i++ {
-		bs = append(bs, i)
-	}
-	for i := 161; i < 173; i++ {
-		bs = append(bs, i)
-	}
-	for i := 174; i < 256; i++ {
-		bs = append(bs, i)
+	for i := 33; i < 256; i++ {
+		switch {
+		case i >= 33 && i < 127:
+			bs = append(bs, i)
+		case i >= 161 && i < 173:
+			bs = append(bs, i)
+		case i >= 174 && i < 256:
+			bs = append(bs, i)
+		default:
+			continue
+		}
 	}
 
 	cs := make([]int, 0)
@@ -316,14 +316,12 @@ func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	}
 
 	result := map[byte]rune{}
+	resultInverse := map[rune]byte{}
 	for i := range bs {
 		result[byte(bs[i])] = rune(cs[i])
+		resultInverse[rune(cs[i])] = byte(bs[i])
 	}
 
-	resultInverse := map[rune]byte{}
-	for k, v := range result {
-		resultInverse[v] = k
-	}
 	return result, resultInverse
 }
 
