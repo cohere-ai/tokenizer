@@ -20,42 +20,6 @@ var f embed.FS
 var (
 	splitRegex                        = regexp2.MustCompile(`(?i:'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+)`, 0)
 	bytesEncoder, bytesEncoderInverse = bytesToUnicode()
-
-	punctuationNormalize = map[rune]rune{
-		// -
-		8208: 45,
-		8209: 45,
-		8210: 45,
-		8211: 45,
-		8212: 45,
-		8213: 45,
-
-		// '
-		8216: 39,
-		8217: 39,
-		8242: 39,
-
-		// "
-		8220: 34,
-		8221: 34,
-		8243: 34,
-
-		// <
-		8249: 60,
-
-		// >
-		8250: 62,
-
-		// ?
-		8263: 63,
-		8264: 63,
-
-		// %
-		8274: 37,
-
-		// !
-		8265: 33,
-	}
 )
 
 type Encoder struct {
@@ -245,8 +209,8 @@ func unicodeEncode(word string) string {
 
 	for _, b := range []byte(word) {
 		encodedRune := bytesEncoder[b]
-		if _, ok := punctuationNormalize[encodedRune]; ok {
-			encodedRune = punctuationNormalize[encodedRune]
+		if _, ok := Punctuation[encodedRune]; ok {
+			encodedRune = Punctuation[encodedRune]
 		}
 		tokenBuffer.WriteRune(encodedRune)
 	}
