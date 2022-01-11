@@ -65,6 +65,14 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 	if vocabOpenErr != nil || encoderOpenErr != nil {
 		return nil, errors.New("failed to load prebuilt tokenizer")
 	}
+	encoderContents, err := f.ReadFile(encoderPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to read encoder file")
+	}
+	encoderMap := map[string]int64{}
+	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
+		return nil, errors.Wrap(err, "encoder file had invalid json")
+	}
 
 	vocabContents, err := f.ReadFile(vocabPath)
 	if err != nil {
@@ -79,22 +87,15 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 		bpeMerges = append(bpeMerges, [2]string{split[0], split[1]})
 	}
 
-	encoderContents, err := f.ReadFile(encoderPath)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to read encoder file")
-	}
-	encoderMap := map[string]int64{}
-	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
-		return nil, errors.Wrap(err, "encoder file had invalid json")
-	}
-
 	return New(encoderMap, bpeMerges)
 }
 
 func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
+	vocabSize := int64(0)
 	decoder := map[int64]string{}
 	for k, v := range encoder {
 		decoder[v] = k
+		vocabSize++
 	}
 
 	bpeRanks := map[[2]string]int64{}
@@ -107,7 +108,7 @@ func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
 		Decoder:   decoder,
 		BPERanks:  bpeRanks,
 		Cache:     map[string]string{},
-		VocabSize: int64(len(encoder)),
+		VocabSize: vocabSize,
 	}, nil
 }
 
@@ -172,7 +173,7 @@ func (e *Encoder) BPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) encodeWords(words []string) []int64 {
+func (e *Encoder) EncodeWords(words []string) []int64 {
 	bpeTokens := []int64{}
 
 	for _, word := range words {
@@ -189,8 +190,8 @@ func (e *Encoder) encodeWords(words []string) []int64 {
 }
 
 func (e *Encoder) Encode(text string) []int64 {
-	words := wordSplit(text)
-	return e.encodeWords(words)
+	words := WordSplit(text)
+	return e.EncodeWords(words)
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
@@ -216,7 +217,7 @@ func unicodeEncode(word string) string {
 	return word
 }
 
-func wordSplit(s string) []string {
+func WordSplit(s string) []string {
 	results := make([]string, 0)
 	wordsMatch, _ := splitRegex.FindStringMatch(s)
 	if wordsMatch == nil {
@@ -275,12 +276,13 @@ func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	}
 
 	result := map[byte]rune{}
-	resultInverse := map[rune]byte{}
 	for i := range bs {
 		result[byte(bs[i])] = rune(cs[i])
-		resultInverse[rune(cs[i])] = byte(bs[i])
 	}
-
+	resultInverse := map[rune]byte{}
+	for k, v := range result {
+		resultInverse[v] = k
+	}
 	return result, resultInverse
 }
 
