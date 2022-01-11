@@ -123,6 +123,7 @@ func getPairs(wordPieces []string) [][2]string {
 		pairs = append(pairs, [2]string{prevChar, wordPiece})
 		prevChar = wordPiece
 	}
+
 	return pairs
 }
 
@@ -279,6 +280,7 @@ func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	for i := range bs {
 		result[byte(bs[i])] = rune(cs[i])
 	}
+
 	resultInverse := map[rune]byte{}
 	for k, v := range result {
 		resultInverse[v] = k
