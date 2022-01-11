@@ -209,9 +209,6 @@ func unicodeEncode(word string) string {
 
 	for _, b := range []byte(word) {
 		encodedRune := bytesEncoder[b]
-		if _, ok := Punctuation[encodedRune]; ok {
-			encodedRune = Punctuation[encodedRune]
-		}
 		tokenBuffer.WriteRune(encodedRune)
 	}
 
