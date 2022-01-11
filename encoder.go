@@ -253,17 +253,14 @@ func runeContains(bs []int, b int) bool {
 
 func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	bs := []int{}
-	for i := 33; i < 256; i++ {
-		switch {
-		case i >= 33 && i < 127:
-			bs = append(bs, i)
-		case i >= 161 && i < 173:
-			bs = append(bs, i)
-		case i >= 174 && i < 256:
-			bs = append(bs, i)
-		default:
-			continue
-		}
+	for i := 33; i < 127; i++ {
+		bs = append(bs, i)
+	}
+	for i := 161; i < 173; i++ {
+		bs = append(bs, i)
+	}
+	for i := 174; i < 256; i++ {
+		bs = append(bs, i)
 	}
 
 	cs := make([]int, 0)
