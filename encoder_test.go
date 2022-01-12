@@ -97,7 +97,7 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		{
 			testCase: TestCase{Name: "weird character"},
 			tokens: []string{
-				"�",
+				"È",
 			},
 		},
 	}
