@@ -54,8 +54,8 @@ func TestUnicodeEncode(t *testing.T) {
 	}{
 		{
 			testCase:   TestCase{Name: "normal word"},
-			inputWord:  "Ç",
-			outputWord: "Ç",
+			inputWord:  "testing",
+			outputWord: "testing",
 		},
 	}
 	for _, tc := range testCases {
@@ -71,30 +71,30 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		testCase TestCase
 		tokens   []string
 	}{
-		// {
-		// 	testCase: TestCase{Name: "{ }"},
-		// 	tokens: []string{
-		// 		" ",
-		// 	},
-		// },
-		// {
-		// 	testCase: TestCase{Name: "a"},
-		// 	tokens: []string{
-		// 		"a",
-		// 	},
-		// },
-		// {
-		// 	testCase: TestCase{Name: "{ }apple"},
-		// 	tokens: []string{
-		// 		" apple",
-		// 	},
-		// },
-		// {
-		// 	testCase: TestCase{Name: "lorem ipsum"},
-		// 	tokens: []string{
-		// 		"L", "orem", " ipsum", " dolor", " sit", " amet", ",", " consectetur", " adip", "iscing", " elit", ".", " N", "ulla", " quis", ".",
-		// 	},
-		// },
+		{
+			testCase: TestCase{Name: "{ }"},
+			tokens: []string{
+				" ",
+			},
+		},
+		{
+			testCase: TestCase{Name: "a"},
+			tokens: []string{
+				"a",
+			},
+		},
+		{
+			testCase: TestCase{Name: "{ }apple"},
+			tokens: []string{
+				" apple",
+			},
+		},
+		{
+			testCase: TestCase{Name: "lorem ipsum"},
+			tokens: []string{
+				"L", "orem", " ipsum", " dolor", " sit", " amet", ",", " consectetur", " adip", "iscing", " elit", ".", " N", "ulla", " quis", ".",
+			},
+		},
 		{
 			testCase: TestCase{Name: "weird character"},
 			tokens: []string{
