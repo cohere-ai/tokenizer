@@ -2,7 +2,7 @@
 
 <p align="center">
     <br>
-    <img src="https://huggingface.co/landing/assets/tokenizers/tokenizers-logo.png" width="600"/>
+    <img src="https://raw.githubusercontent.com/cohere-ai/tokenizer/readme-initial-draft/cokenizer.png" width="600"/>
     <br>
 <p>
 
