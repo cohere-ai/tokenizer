@@ -1,7 +1,6 @@
 package tokenizer
 
 import (
-	"fmt"
 	"math/rand"
 	"strings"
 	"testing"
@@ -106,8 +105,8 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		t.Run(tc.testCase.Name, func(tt *testing.T) {
 			joinedTokens := strings.Join(tc.tokens, "")
 			encoded := encoder.Encode(joinedTokens)
-			fmt.Print(encoded)
-			// require.Len(t, encoded, len(tc.tokens))
+
+			require.Len(t, encoded, len(tc.tokens))
 			for i, token := range tc.tokens {
 				require.Equal(t, token, encoder.Decode([]int64{encoded[i]}))
 			}
