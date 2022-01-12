@@ -9,7 +9,8 @@ We plan on eventually also open sourcing tools to create new tokenizers.
 
 ## Example using Go
 Choose or create a tokenizer inside of the tokenizers folder including both a encoder.json file and a vocab.bpe file and instantiate an encoder as seen below:
-```import (
+```
+import (
   ...
   "https://github.com/cohere-ai/tokenizer"
 )
