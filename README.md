@@ -21,7 +21,7 @@ import (
   "https://github.com/cohere-ai/tokenizer"
 )
 
-encoder := NewFromPrebuilt("coheretext-50k")
+encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
 ```
 From here, input the string as a parameter to the encoder's NumTokens(string) method to find how many tokens the string is comprised of in the form of an integer:
 ```
