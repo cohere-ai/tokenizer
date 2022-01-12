@@ -2,11 +2,11 @@
 
 <p align="center">
     <br>
-    <img src="https://raw.githubusercontent.com/cohere-ai/tokenizer/readme-initial-draft/cokenizer.png" width="600"/>
+    <img src="cokenizer.png" width="800"/>
     <br>
 <p>
 
-# About
+# Co:kenizer
 
 Cohere's `tokenizers` library provides an interface to encode and decode text given a computed vocabulary, and includes pre-computed tokenizers that are used to train Cohere's models. 
 
