@@ -2,6 +2,8 @@ package tokenizer
 
 import (
 	"math/rand"
+	"os"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -21,6 +23,12 @@ func defaultEncoder(t *testing.T) *Encoder {
 	return encoder
 }
 
+func defaultBenchmarkEncoder(b *testing.B) *Encoder {
+	encoder, err := NewFromPrebuilt("coheretext-50k")
+	require.NoError(b, err)
+	return encoder
+}
+
 func randomString(n int) string {
 	b := make([]rune, n)
 	for i := range b {
@@ -29,11 +37,7 @@ func randomString(n int) string {
 	return string(b)
 }
 func benchmarkEncode(text string, b *testing.B) {
-	encoder, err := NewFromPrebuilt("coheretext-50k")
-	if err != nil {
-		b.Error(err)
-	}
-
+	encoder := defaultBenchmarkEncoder(b)
 	for n := 0; n < b.N; n++ {
 		encoder.Encode(text)
 	}
@@ -129,11 +133,7 @@ func generateTokens(numTokens int) []int64 {
 }
 
 func benchmarkTokenDecode(numTokens int, b *testing.B) {
-	encoder, err := NewFromPrebuilt("coheretext-50k")
-	if err != nil {
-		b.Error(err)
-	}
-
+	encoder := defaultBenchmarkEncoder(b)
 	tokens := generateTokens(numTokens)
 	s := encoder.Decode(tokens)
 	b.ResetTimer()
@@ -144,14 +144,33 @@ func benchmarkTokenDecode(numTokens int, b *testing.B) {
 }
 
 func benchmarkDecode(numTokens int, b *testing.B) {
-	encoder, err := NewFromPrebuilt("coheretext-50k")
-	if err != nil {
-		b.Error(err)
-	}
+	encoder := defaultBenchmarkEncoder(b)
 	tokens := generateTokens(numTokens)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		encoder.Decode(tokens)
+	}
+}
+
+func TestFromPrebuiltAndFromReader(t *testing.T) {
+	ePrebuilt := defaultEncoder(t)
+
+	encoderReader, err := os.Open("tokenizers/coheretext-50k/encoder.json")
+	require.NoError(t, err)
+	vocabReader, err := os.Open("tokenizers/coheretext-50k/vocab.bpe")
+	require.NoError(t, err)
+
+	eReader, err := NewFromReaders(encoderReader, vocabReader)
+	require.NoError(t, err)
+
+	if !(reflect.DeepEqual(ePrebuilt.Encoder, eReader.Encoder) &&
+		reflect.DeepEqual(ePrebuilt.Decoder, eReader.Decoder) &&
+		reflect.DeepEqual(ePrebuilt.BPERanks, eReader.BPERanks) &&
+		reflect.DeepEqual(ePrebuilt.Cache, eReader.Cache) &&
+		ePrebuilt.VocabSize == eReader.VocabSize) {
+
+		t.Logf("The encoders are not the same.")
+		t.Fail()
 	}
 }
