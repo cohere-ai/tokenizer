@@ -285,7 +285,6 @@ func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	for k, v := range result {
 		resultInverse[v] = k
 	}
-	fmt.Println(resultInverse)
 	return result, resultInverse
 }
 
