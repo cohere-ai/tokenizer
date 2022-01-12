@@ -1,6 +1,7 @@
 package tokenizer
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"testing"
@@ -53,8 +54,8 @@ func TestUnicodeEncode(t *testing.T) {
 	}{
 		{
 			testCase:   TestCase{Name: "normal word"},
-			inputWord:  "asdf",
-			outputWord: "asdf",
+			inputWord:  "Ç",
+			outputWord: "Ç",
 		},
 	}
 	for _, tc := range testCases {
@@ -70,28 +71,34 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		testCase TestCase
 		tokens   []string
 	}{
+		// {
+		// 	testCase: TestCase{Name: "{ }"},
+		// 	tokens: []string{
+		// 		" ",
+		// 	},
+		// },
+		// {
+		// 	testCase: TestCase{Name: "a"},
+		// 	tokens: []string{
+		// 		"a",
+		// 	},
+		// },
+		// {
+		// 	testCase: TestCase{Name: "{ }apple"},
+		// 	tokens: []string{
+		// 		" apple",
+		// 	},
+		// },
+		// {
+		// 	testCase: TestCase{Name: "lorem ipsum"},
+		// 	tokens: []string{
+		// 		"L", "orem", " ipsum", " dolor", " sit", " amet", ",", " consectetur", " adip", "iscing", " elit", ".", " N", "ulla", " quis", ".",
+		// 	},
+		// },
 		{
-			testCase: TestCase{Name: "{ }"},
+			testCase: TestCase{Name: "weird character"},
 			tokens: []string{
-				" ",
-			},
-		},
-		{
-			testCase: TestCase{Name: "a"},
-			tokens: []string{
-				"a",
-			},
-		},
-		{
-			testCase: TestCase{Name: "{ }apple"},
-			tokens: []string{
-				" apple",
-			},
-		},
-		{
-			testCase: TestCase{Name: "lorem ipsum"},
-			tokens: []string{
-				"L", "orem", " ipsum", " dolor", " sit", " amet", ",", " consectetur", " adip", "iscing", " elit", ".", " N", "ulla", " quis", ".",
+				"�",
 			},
 		},
 	}
@@ -99,13 +106,13 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		t.Run(tc.testCase.Name, func(tt *testing.T) {
 			joinedTokens := strings.Join(tc.tokens, "")
 			encoded := encoder.Encode(joinedTokens)
-
-			require.Len(t, encoded, len(tc.tokens))
+			fmt.Print(encoded)
+			// require.Len(t, encoded, len(tc.tokens))
 			for i, token := range tc.tokens {
-				require.Equal(t, encoder.Decode([]int64{encoded[i]}), token)
+				require.Equal(t, token, encoder.Decode([]int64{encoded[i]}))
 			}
 
-			require.Equal(t, encoder.Decode(encoded), joinedTokens)
+			require.Equal(t, joinedTokens, encoder.Decode(encoded))
 		})
 	}
 }
