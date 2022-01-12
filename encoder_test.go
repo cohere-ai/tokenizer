@@ -115,3 +115,43 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 		})
 	}
 }
+
+// benchmarking 1k token speed
+func Benchmark1000TokensDecode(b *testing.B) { benchmarkDecode(1000, b) }
+func Benchmark1000TokensEncode(b *testing.B) { benchmarkTokenDecode(1000, b) }
+
+func generateTokens(numTokens int) []int64 {
+	var tokens []int64
+	for n := 0; n < numTokens; n++ {
+		tokens = append(tokens, rand.Int63n(50000-1)+1)
+	}
+	return tokens
+}
+
+func benchmarkTokenDecode(numTokens int, b *testing.B) {
+	encoder, err := NewFromPrebuilt("coheretext-50k")
+	if err != nil {
+		b.Error(err)
+	}
+
+	tokens := generateTokens(numTokens)
+	s := encoder.Decode(tokens)
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		encoder.Encode(s)
+	}
+}
+
+func benchmarkDecode(numTokens int, b *testing.B) {
+	encoder, err := NewFromPrebuilt("coheretext-50k")
+	if err != nil {
+		b.Error(err)
+	}
+	tokens := generateTokens(numTokens)
+
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		encoder.Decode(tokens)
+	}
+}
