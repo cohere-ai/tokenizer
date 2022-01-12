@@ -1,4 +1,12 @@
-# tokenizers
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+<p align="center">
+    <br>
+    <img src="https://huggingface.co/landing/assets/tokenizers/tokenizers-logo.png" width="600"/>
+    <br>
+<p>
+
+# About
 
 Cohere's `tokenizers` library provides an interface to encode and decode text given a computed vocabulary, and includes pre-computed tokenizers that are used to train Cohere's models. 
 
