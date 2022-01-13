@@ -38,6 +38,7 @@ func benchmarkEncode(text string, b *testing.B) {
 		encoder.Encode(text)
 	}
 }
+
 func BenchmarkEncode1Sentence(b *testing.B)  { benchmarkEncode(randomString(100), b) }
 func BenchmarkEncode1Paragraph(b *testing.B) { benchmarkEncode(randomString(600), b) }
 func BenchmarkEncode1KB(b *testing.B)        { benchmarkEncode(randomString(1000), b) }
