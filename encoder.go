@@ -112,22 +112,6 @@ func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
 	}, nil
 }
 
-func (e *Encoder) NumTokens(text string) int {
-	tokens := e.Encode(text)
-	return len(tokens)
-}
-
-func (e *Encoder) ListTokens(text string) []string {
-	var listOfTokens []string
-	tokens := e.Encode(text)
-
-	for _, token := range tokens {
-		listOfTokens = append(listOfTokens, "\""+e.Decode([]int64{token})+"\"")
-	}
-
-	return listOfTokens
-}
-
 func getPairs(wordPieces []string) [][2]string {
 	if len(wordPieces) == 0 {
 		return nil
