@@ -2,6 +2,8 @@ package tokenizer
 
 import (
 	"math/rand"
+	"os"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -21,6 +23,12 @@ func defaultEncoder(t *testing.T) *Encoder {
 	return encoder
 }
 
+func defaultBenchmarkEncoder(b *testing.B) *Encoder {
+	encoder, err := NewFromPrebuilt("coheretext-50k")
+	require.NoError(b, err)
+	return encoder
+}
+
 func randomString(n int) string {
 	b := make([]rune, n)
 	for i := range b {
@@ -29,11 +37,7 @@ func randomString(n int) string {
 	return string(b)
 }
 func benchmarkEncode(text string, b *testing.B) {
-	encoder, err := NewFromPrebuilt("coheretext-50k")
-	if err != nil {
-		b.Error(err)
-	}
-
+	encoder := defaultBenchmarkEncoder(b)
 	for n := 0; n < b.N; n++ {
 		encoder.Encode(text)
 	}
@@ -42,8 +46,6 @@ func BenchmarkEncode1Sentence(b *testing.B)  { benchmarkEncode(randomString(100)
 func BenchmarkEncode1Paragraph(b *testing.B) { benchmarkEncode(randomString(600), b) }
 func BenchmarkEncode1KB(b *testing.B)        { benchmarkEncode(randomString(1000), b) }
 func BenchmarkEncode1MB(b *testing.B)        { benchmarkEncode(randomString(1000000), b) }
-func BenchmarkEncode500MB(b *testing.B)      { benchmarkEncode(randomString(500000000), b) }
-func BenchmarkEncode1GB(b *testing.B)        { benchmarkEncode(randomString(1000000000), b) }
 
 func TestUnicodeEncode(t *testing.T) {
 	testCases := []struct {
@@ -113,5 +115,60 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 
 			require.Equal(t, joinedTokens, encoder.Decode(encoded))
 		})
+	}
+}
+
+// benchmarking 1k token speed
+func Benchmark1000TokensDecode(b *testing.B) { benchmarkDecode(1000, b) }
+func Benchmark1000TokensEncode(b *testing.B) { benchmarkTokenDecode(1000, b) }
+
+func generateTokens(numTokens int) []int64 {
+	var tokens []int64
+	for n := 0; n < numTokens; n++ {
+		tokens = append(tokens, rand.Int63n(50000-1)+1)
+	}
+	return tokens
+}
+
+func benchmarkTokenDecode(numTokens int, b *testing.B) {
+	encoder := defaultBenchmarkEncoder(b)
+	tokens := generateTokens(numTokens)
+	s := encoder.Decode(tokens)
+	b.ResetTimer()
+
+	for n := 0; n < b.N; n++ {
+		encoder.Encode(s)
+	}
+}
+
+func benchmarkDecode(numTokens int, b *testing.B) {
+	encoder := defaultBenchmarkEncoder(b)
+	tokens := generateTokens(numTokens)
+
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		encoder.Decode(tokens)
+	}
+}
+
+func TestFromPrebuiltAndFromReader(t *testing.T) {
+	ePrebuilt := defaultEncoder(t)
+
+	encoderReader, err := os.Open("tokenizers/coheretext-50k/encoder.json")
+	require.NoError(t, err)
+	vocabReader, err := os.Open("tokenizers/coheretext-50k/vocab.bpe")
+	require.NoError(t, err)
+
+	eReader, err := NewFromReaders(encoderReader, vocabReader)
+	require.NoError(t, err)
+
+	if !(reflect.DeepEqual(ePrebuilt.Encoder, eReader.Encoder) &&
+		reflect.DeepEqual(ePrebuilt.Decoder, eReader.Decoder) &&
+		reflect.DeepEqual(ePrebuilt.BPERanks, eReader.BPERanks) &&
+		reflect.DeepEqual(ePrebuilt.Cache, eReader.Cache) &&
+		ePrebuilt.VocabSize == eReader.VocabSize) {
+
+		t.Logf("The encoders are not the same.")
+		t.Fail()
 	}
 }
