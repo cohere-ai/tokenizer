@@ -46,8 +46,6 @@ func BenchmarkEncode1Sentence(b *testing.B)  { benchmarkEncode(randomString(100)
 func BenchmarkEncode1Paragraph(b *testing.B) { benchmarkEncode(randomString(600), b) }
 func BenchmarkEncode1KB(b *testing.B)        { benchmarkEncode(randomString(1000), b) }
 func BenchmarkEncode1MB(b *testing.B)        { benchmarkEncode(randomString(1000000), b) }
-func BenchmarkEncode500MB(b *testing.B)      { benchmarkEncode(randomString(500000000), b) }
-func BenchmarkEncode1GB(b *testing.B)        { benchmarkEncode(randomString(1000000000), b) }
 
 func TestUnicodeEncode(t *testing.T) {
 	testCases := []struct {
