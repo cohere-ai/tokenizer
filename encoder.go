@@ -149,7 +149,7 @@ func (e *Encoder) getMinPair(pairs [][2]string) [2]string {
 	return minimumPair
 }
 
-func (e *Encoder) BPE(token string) []string {
+func (e *Encoder) bPE(token string) []string {
 	wordPieces := strings.Split(token, "")
 	pairs := getPairs(wordPieces)
 	if len(pairs) == 0 {
@@ -174,12 +174,12 @@ func (e *Encoder) BPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) EncodeWords(words []string) []int64 {
+func (e *Encoder) encodeWords(words []string) []int64 {
 	bpeTokens := []int64{}
 
 	for _, word := range words {
 		token := unicodeEncode(word)
-		bpeEncoded := e.BPE(token)
+		bpeEncoded := e.bPE(token)
 		for _, bpeEnc := range bpeEncoded {
 			if _, ok := e.Encoder[bpeEnc]; ok {
 				bpeTokens = append(bpeTokens, e.Encoder[bpeEnc])
@@ -191,8 +191,8 @@ func (e *Encoder) EncodeWords(words []string) []int64 {
 }
 
 func (e *Encoder) Encode(text string) []int64 {
-	words := WordSplit(text)
-	return e.EncodeWords(words)
+	words := wordSplit(text)
+	return e.encodeWords(words)
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
@@ -218,7 +218,7 @@ func unicodeEncode(word string) string {
 	return word
 }
 
-func WordSplit(s string) []string {
+func wordSplit(s string) []string {
 	results := make([]string, 0)
 	wordsMatch, _ := splitRegex.FindStringMatch(s)
 	if wordsMatch == nil {
