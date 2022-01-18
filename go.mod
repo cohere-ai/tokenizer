@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/dlclark/regexp2 v1.4.0
+	github.com/go-python/gopy v0.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 )
