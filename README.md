@@ -12,6 +12,10 @@ We plan on eventually also open sourcing tools to create new tokenizers.
 
 ## Installation 
 ...
+To create a Python version of this tokenizer, you can generate it using gopy as follows:
+```
+gopy build -output={file_name} -vm=`which python3` {src_to_go_pkg}
+```
 
 ## Example using Go
 Choose or create a tokenizer inside of the tokenizers folder including both a encoder.json file and a vocab.bpe file and instantiate an encoder as seen below:
