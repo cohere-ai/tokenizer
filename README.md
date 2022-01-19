@@ -22,7 +22,7 @@ Choose or create a tokenizer inside of the tokenizers folder including both a en
 ```
 import (
   ...
-  "https://github.com/cohere-ai/tokenizer"
+  "github.com/cohere-ai/tokenizer"
 )
 
 encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
