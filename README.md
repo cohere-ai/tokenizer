@@ -10,15 +10,8 @@ Cohere's `tokenizers` library provides an interface to encode and decode text gi
 
 We plan on eventually also open sourcing tools to create new tokenizers. 
 
-## Installation 
-...
-To create a Python version of this tokenizer, you can generate it using gopy as follows:
-```
-gopy build -output={file_name} -vm=`which python3` {src_to_go_pkg}
-```
-
 ## Example using Go
-Choose or create a tokenizer inside of the tokenizers folder including both a encoder.json file and a vocab.bpe file and instantiate an encoder as seen below:
+Choose a tokenizer inside of the tokenizers folder including both a encoder.json file and a vocab.bpe file and instantiate an encoder as seen below. The tokenizer used in this example is named the coheretext-50k tokenizer.
 ```
 import (
   ...
@@ -27,15 +20,17 @@ import (
 
 encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
 ```
-From here, input the string as a parameter to the encoder's NumTokens(string) method to find how many tokens the string is comprised of in the form of an integer:
+    
+To encode a string of text, use the Encode method. Encode returns a slice of int64s.
 ```
-fmt.Printf("%d", encoder.NumTokens("Example String"))
-# Output: 2
+encoded := encoder.Encode("this is a string to be encoded")
+fmt.Printf("%v", encoded)
+// [6372 329 258 3852 288 345 37754]
 ```
-Or find out exactly what tokens are being used using the ListTokens(string) method, which returns a slice of strings:
+To decode a slice of int64s, use the Decode method. Decode returns a string.
 ```
-fmt.Printf("%v", encoder.ListTokens("Example String For Listing Tokens")
-# Output: ["Example" " String" " For" " Listing" " Tok" "ens"]
+fmt.Printf(encoder.Decode(encoded))
+// this is a string to be encoded
 ```
 
 ## Speed
