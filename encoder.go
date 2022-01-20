@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:embed vocabularies/*
+//go:embed vocab/*
 var f embed.FS
 
 var (
@@ -57,8 +57,8 @@ func NewFromReaders(encoderReader, vocabReader io.Reader) (*Encoder, error) {
 }
 
 func NewFromPrebuilt(name string) (*Encoder, error) {
-	encoderPath := fmt.Sprintf("vocabularies/%s/encoder.json", name)
-	vocabPath := fmt.Sprintf("vocabularies/%s/vocab.bpe", name)
+	encoderPath := fmt.Sprintf("vocab/%s/encoder.json", name)
+	vocabPath := fmt.Sprintf("vocab/%s/vocab.bpe", name)
 
 	_, encoderOpenErr := f.Open(encoderPath)
 	_, vocabOpenErr := f.Open(vocabPath)
