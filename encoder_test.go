@@ -110,7 +110,7 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 
 			require.Len(t, encoded, len(tc.tokens))
 			for i, token := range tc.tokens {
-				require.Equal(t, token, encoder.Decode([]int64{encoded[i]}))
+				require.Equal(t, token, encoder.Decode([]uint64{encoded[i]}))
 			}
 
 			require.Equal(t, joinedTokens, encoder.Decode(encoded))
@@ -122,10 +122,10 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 func Benchmark1000TokensDecode(b *testing.B) { benchmarkDecode(1000, b) }
 func Benchmark1000TokensEncode(b *testing.B) { benchmarkTokenDecode(1000, b) }
 
-func generateTokens(numTokens int) []int64 {
-	var tokens []int64
+func generateTokens(numTokens int) []uint64 {
+	var tokens []uint64
 	for n := 0; n < numTokens; n++ {
-		tokens = append(tokens, rand.Int63n(50000-1)+1)
+		tokens = append(tokens, uint64(rand.Int63n(50000-1)+1))
 	}
 	return tokens
 }

@@ -23,11 +23,11 @@ var (
 )
 
 type Encoder struct {
-	Encoder   map[string]int64
-	Decoder   map[int64]string
-	BPERanks  map[[2]string]int64
+	Encoder   map[string]uint64
+	Decoder   map[uint64]string
+	BPERanks  map[[2]string]uint64
 	Cache     map[string]string
-	VocabSize int64
+	VocabSize uint64
 }
 
 func NewFromReaders(encoderReader, vocabReader io.Reader) (*Encoder, error) {
@@ -48,7 +48,7 @@ func NewFromReaders(encoderReader, vocabReader io.Reader) (*Encoder, error) {
 		return nil, errors.Wrap(err, "failed to read encoder file")
 	}
 
-	encoderMap := map[string]int64{}
+	encoderMap := map[string]uint64{}
 	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
 		return nil, errors.Wrap(err, "corrupted encoder file")
 	}
@@ -69,7 +69,7 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read encoder file")
 	}
-	encoderMap := map[string]int64{}
+	encoderMap := map[string]uint64{}
 	if err := json.Unmarshal(encoderContents, &encoderMap); err != nil {
 		return nil, errors.Wrap(err, "encoder file had invalid json")
 	}
@@ -90,16 +90,16 @@ func NewFromPrebuilt(name string) (*Encoder, error) {
 	return New(encoderMap, bpeMerges)
 }
 
-func New(encoder map[string]int64, bpeMerges [][2]string) (*Encoder, error) {
-	vocabSize := int64(0)
-	decoder := map[int64]string{}
+func New(encoder map[string]uint64, bpeMerges [][2]string) (*Encoder, error) {
+	vocabSize := uint64(0)
+	decoder := map[uint64]string{}
 	for k, v := range encoder {
 		decoder[v] = k
 		vocabSize++
 	}
 
-	bpeRanks := map[[2]string]int64{}
-	for i := int64(0); i < int64(len(bpeMerges)); i++ {
+	bpeRanks := map[[2]string]uint64{}
+	for i := uint64(0); i < uint64(len(bpeMerges)); i++ {
 		bpeRanks[bpeMerges[i]] = i
 	}
 
@@ -129,7 +129,7 @@ func getPairs(wordPieces []string) [][2]string {
 
 func (e *Encoder) getMinPair(pairs [][2]string) [2]string {
 	minimumPair := pairs[0]
-	outOfVocab := int64(len(e.BPERanks)) + 1
+	outOfVocab := uint64(len(e.BPERanks)) + 1
 	for _, pair := range pairs[1:] {
 		pairVal, ok := e.BPERanks[pair]
 		if !ok {
@@ -174,8 +174,8 @@ func (e *Encoder) bPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) encodeWords(words []string) []int64 {
-	bpeTokens := []int64{}
+func (e *Encoder) encodeWords(words []string) []uint64 {
+	bpeTokens := []uint64{}
 
 	for _, word := range words {
 		token := unicodeEncode(word)
@@ -190,12 +190,12 @@ func (e *Encoder) encodeWords(words []string) []int64 {
 	return bpeTokens
 }
 
-func (e *Encoder) Encode(text string) []int64 {
+func (e *Encoder) Encode(text string) []uint64 {
 	words := wordSplit(text)
 	return e.encodeWords(words)
 }
 
-func (e *Encoder) Decode(tokens []int64) string {
+func (e *Encoder) Decode(tokens []uint64) string {
 	var decodeBuffer bytes.Buffer
 	for _, token := range tokens {
 		for _, dt := range e.Decoder[token] {
@@ -288,23 +288,23 @@ func bytesToUnicode() (map[byte]rune, map[rune]byte) {
 	return result, resultInverse
 }
 
-func indexOf(wordPieces []string, word string, i int64) int64 {
-	for j := i; j < int64(len(wordPieces)); j++ {
+func indexOf(wordPieces []string, word string, i uint64) (uint64, bool) {
+	for j := i; j < uint64(len(wordPieces)); j++ {
 		if word == wordPieces[j] {
-			return j
+			return j, true
 		}
 	}
 
-	return -1
+	return 0, false
 }
 func replace(wordPieces []string, bigram [2]string) []string {
 	first, second := bigram[0], bigram[1]
 	pairStr := fmt.Sprintf("%s%s", first, second)
 	newWord := []string{}
-	i := int64(0)
-	for i < int64(len(wordPieces)) {
-		j := indexOf(wordPieces, first, i)
-		if j >= 0 {
+	i := uint64(0)
+	for i < uint64(len(wordPieces)) {
+		j, exists := indexOf(wordPieces, first, i)
+		if exists {
 			newWord = append(newWord, wordPieces[i:j]...)
 			i = j
 		} else {
@@ -312,7 +312,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 			break
 		}
 
-		if wordPieces[i] == first && i < int64(len(wordPieces)-1) && wordPieces[i+1] == second {
+		if wordPieces[i] == first && i < uint64(len(wordPieces)-1) && wordPieces[i+1] == second {
 			newWord = append(newWord, pairStr)
 			i += 2
 		} else {
