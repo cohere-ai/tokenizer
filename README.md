@@ -1,17 +1,10 @@
-<p align="center">
-    <br>
-    <img src="cokenizer.png" width="800"/>
-    <br>
-<p>
-
-# Co:kenizer [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
+## Tokenizers [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 Cohere's `tokenizers` library provides an interface to encode and decode text given a computed vocabulary, and includes pre-computed tokenizers that are used to train Cohere's models. 
 
 We plan on eventually also open sourcing tools to create new tokenizers. 
 
 ## Example using Go
-Choose a tokenizer inside of the tokenizers folder including both a `encoder.json` file and a vocab.bpe file and create an encoder as seen below. The tokenizer used in this example is named the `coheretext-50k tokenizer`.
+Choose a tokenizer inside of the trained-tokenizers folder including both a `encoder.json` file and a `vocab.bpe` file and create an encoder as seen below. The tokenizer used in this example is named the `coheretext-50k` tokenizer.
 ```
 import (
   ...
@@ -21,7 +14,7 @@ import (
 encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
 ```
     
-To encode a string of text, use the Encode method. Encode returns a slice of int64s.
+To encode a string of text, use the Encode method. Encode returns a slice of `int64s`.
 ```
 encoded := encoder.Encode("this is a string to be encoded")
 fmt.Printf("%v", encoded)
