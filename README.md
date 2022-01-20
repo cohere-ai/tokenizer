@@ -14,17 +14,17 @@ import (
 encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
 ```
     
-To encode a string of text, use the Encode method. Encode returns a slice of int64s.
-```
+To encode a string of text, use the Encode method. Encode returns a slice of `int64s`.
+`
 encoded := encoder.Encode("this is a string to be encoded")
 fmt.Printf("%v", encoded)
 // [6372 329 258 3852 288 345 37754]
-```
+`
 To decode a slice of `int64`s, use the Decode method. Decode returns a string.
-```
+`
 fmt.Printf(encoder.Decode(encoded))
 // this is a string to be encoded
-```
+`
 
 ## Speed
 Using a 2.5GHz CPU, encoding 1000 tokens takes approximately 6.5 milliseconds, and decoding 1000 tokens takes approximately 0.2 milliseconds.
