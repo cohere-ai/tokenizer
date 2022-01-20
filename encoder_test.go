@@ -154,9 +154,9 @@ func benchmarkDecode(numTokens int, b *testing.B) {
 func TestFromPrebuiltAndFromReader(t *testing.T) {
 	ePrebuilt := defaultEncoder(t)
 
-	encoderReader, err := os.Open("tokenizers/coheretext-50k/encoder.json")
+	encoderReader, err := os.Open("vocab/coheretext-50k/encoder.json")
 	require.NoError(t, err)
-	vocabReader, err := os.Open("tokenizers/coheretext-50k/vocab.bpe")
+	vocabReader, err := os.Open("vocab/coheretext-50k/vocab.bpe")
 	require.NoError(t, err)
 
 	eReader, err := NewFromReaders(encoderReader, vocabReader)
