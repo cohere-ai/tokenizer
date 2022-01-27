@@ -149,7 +149,7 @@ func (e *Encoder) getMinPair(pairs [][2]string) [2]string {
 	return minimumPair
 }
 
-func (e *Encoder) bPE(token string) []string {
+func (e *Encoder) tokenizerBPE(token string) []string {
 	wordPieces := strings.Split(token, "")
 	pairs := getPairs(wordPieces)
 	if len(pairs) == 0 {
@@ -179,7 +179,7 @@ func (e *Encoder) encodeWords(words []string) []int64 {
 
 	for _, word := range words {
 		token := unicodeEncode(word)
-		bpeEncoded := e.bPE(token)
+		bpeEncoded := e.tokenizerBPE(token)
 		for _, bpeEnc := range bpeEncoded {
 			if _, ok := e.Encoder[bpeEnc]; ok {
 				bpeTokens = append(bpeTokens, e.Encoder[bpeEnc])
