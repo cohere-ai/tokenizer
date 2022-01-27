@@ -190,22 +190,6 @@ func (e *Encoder) encodeWords(words []string) []int64 {
 	return bpeTokens
 }
 
-func (e *Encoder) Encode(text string) []int64 {
-	words := wordSplit(text)
-	return e.encodeWords(words)
-}
-
-func (e *Encoder) Decode(tokens []int64) string {
-	var decodeBuffer bytes.Buffer
-	for _, token := range tokens {
-		for _, dt := range e.Decoder[token] {
-			decodeBuffer.WriteByte(bytesEncoderInverse[dt])
-		}
-	}
-
-	return decodeBuffer.String()
-}
-
 func unicodeEncode(word string) string {
 	var tokenBuffer bytes.Buffer
 
@@ -321,4 +305,20 @@ func replace(wordPieces []string, bigram [2]string) []string {
 		}
 	}
 	return newWord
+}
+
+func (e *Encoder) Encode(text string) []int64 {
+	words := wordSplit(text)
+	return e.encodeWords(words)
+}
+
+func (e *Encoder) Decode(tokens []int64) string {
+	var decodeBuffer bytes.Buffer
+	for _, token := range tokens {
+		for _, dt := range e.Decoder[token] {
+			decodeBuffer.WriteByte(bytesEncoderInverse[dt])
+		}
+	}
+
+	return decodeBuffer.String()
 }
