@@ -174,7 +174,7 @@ func (e *Encoder) tokenizerBPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) encodeWords(words []string) []int64 {
+func (e *Encoder) EncodeWords(words []string) []int64 {
 	bpeTokens := []int64{}
 
 	for _, word := range words {
@@ -309,7 +309,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 
 func (e *Encoder) Encode(text string) []int64 {
 	words := WordSplit(text)
-	return e.encodeWords(words)
+	return e.EncodeWords(words)
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
