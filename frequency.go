@@ -29,7 +29,7 @@ func CountString(s string) map[string]int64 {
 	s = newlineRegex.ReplaceAllString(s, "\n")
 	s = spaceRegex.ReplaceAllString(s, " ")
 
-	words := wordSplit(s)
+	words := WordSplit(s)
 	frequencies := map[string]int64{}
 	for _, word := range words {
 		token := unicodeEncode(word)
