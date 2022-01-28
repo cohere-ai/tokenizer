@@ -202,7 +202,7 @@ func unicodeEncode(word string) string {
 	return word
 }
 
-func wordSplit(s string) []string {
+func WordSplit(s string) []string {
 	results := make([]string, 0)
 	wordsMatch, _ := splitRegex.FindStringMatch(s)
 	if wordsMatch == nil {
@@ -308,7 +308,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 }
 
 func (e *Encoder) Encode(text string) []int64 {
-	words := wordSplit(text)
+	words := WordSplit(text)
 	return e.encodeWords(words)
 }
 
