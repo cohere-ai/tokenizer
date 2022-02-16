@@ -4,7 +4,7 @@ Cohere's `tokenizers` library provides an interface to encode and decode text gi
 We plan on eventually also open sourcing tools to create new tokenizers. 
 
 ## Example using Go
-Choose a tokenizer inside of the trained-tokenizers folder including both a `encoder.json` file and a `vocab.bpe` file and create an encoder as seen below. The tokenizer used in this example is named the `coheretext-50k` tokenizer.
+Choose a tokenizer inside of the vocab folder including both a `encoder.json` file and a `vocab.bpe` file and create an encoder as seen below. The tokenizer used in this example is named the `coheretext-50k` tokenizer.
 ```
 import (
   ...
