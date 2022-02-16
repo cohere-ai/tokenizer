@@ -14,7 +14,7 @@ import (
 encoder := tokenizer.NewFromPrebuilt("coheretext-50k")
 ```
     
-To encode a string of text, use the Encode method. Encode returns a slice of `int64s`.
+To encode a string of text, use the Encode method. Encode returns a slice of `int64`s.
 ```
 encoded := encoder.Encode("this is a string to be encoded")
 fmt.Printf("%v", encoded)
