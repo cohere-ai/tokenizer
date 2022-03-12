@@ -287,7 +287,7 @@ func indexOf(wordPieces []string, word string, i int64) int64 {
 func replace(wordPieces []string, bigram [2]string) []string {
 	first, second := bigram[0], bigram[1]
 	pairStr := fmt.Sprintf("%s%s", first, second)
-	newWord := make([]string, 0, len(wordPieces)*2)
+	newWord := make([]string, 0, len(wordPieces))
 	var i int64
 	for i < int64(len(wordPieces)) {
 		j := indexOf(wordPieces, first, i)
