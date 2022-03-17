@@ -37,6 +37,7 @@ func randomString(n int) string {
 	return string(b)
 }
 func benchmarkEncode(text string, b *testing.B) {
+	b.ReportAllocs()
 	encoder := defaultBenchmarkEncoder(b)
 	for n := 0; n < b.N; n++ {
 		encoder.Encode(text)
@@ -131,6 +132,7 @@ func generateTokens(numTokens int) []int64 {
 }
 
 func benchmarkTokenDecode(numTokens int, b *testing.B) {
+	b.ReportAllocs()
 	encoder := defaultBenchmarkEncoder(b)
 	tokens := generateTokens(numTokens)
 	s := encoder.Decode(tokens)
@@ -142,6 +144,7 @@ func benchmarkTokenDecode(numTokens int, b *testing.B) {
 }
 
 func benchmarkDecode(numTokens int, b *testing.B) {
+	b.ReportAllocs()
 	encoder := defaultBenchmarkEncoder(b)
 	tokens := generateTokens(numTokens)
 
