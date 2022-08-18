@@ -127,7 +127,7 @@ func testBPEEncode(t *testing.T) {
 		}
 
 		for i, text := range texts {
-			tokens := encoder.Encode(text)
+			tokens, _ := encoder.Encode(text)
 			if len(test.expectedTokens[i]) != len(tokens) {
 				t.Fatalf("expected %d tokens but only got %d for \"%s\"", len(test.expectedTokens[i]), len(tokens), text)
 			}

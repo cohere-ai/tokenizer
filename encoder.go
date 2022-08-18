@@ -318,12 +318,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 	return newWord
 }
 
-func (e *Encoder) Encode(text string) []int64 {
-	words := WordSplit(text)
-	return e.EncodeWords(words)
-}
-
-func (e *Encoder) EncodeV2(text string) ([]int64, []string) {
+func (e *Encoder) Encode(text string) ([]int64, []string) {
 	words := WordSplit(text)
 	return e.EncodeWords(words), words
 }
