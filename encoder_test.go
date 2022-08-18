@@ -175,3 +175,10 @@ func TestFromPrebuiltAndFromReader(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestEncodeV2(t *testing.T) {
+	e := defaultEncoder(t)
+	tokenIds, tokenStrings := e.EncodeV2("hello world")
+	require.Equal(t, len(tokenIds), len(tokenStrings), "The number of tokens should be the same")
+	require.Equal(t, e.Encode("hello world"), tokenIds, "Output of EncodeV2 should be the same as Encode")
+}

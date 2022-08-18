@@ -324,6 +324,11 @@ func (e *Encoder) Encode(text string) []int64 {
 	return e.EncodeWords(words)
 }
 
+func (e *Encoder) EncodeV2(text string) ([]int64, []string) {
+	words := WordSplit(text)
+	return e.EncodeWords(words), words
+}
+
 func (e *Encoder) Decode(tokens []int64) string {
 	var decodeBuffer bytes.Buffer
 	for _, token := range tokens {
