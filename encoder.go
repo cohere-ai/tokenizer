@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 
 	"github.com/dlclark/regexp2"
@@ -47,7 +46,7 @@ func NewFromReaders(encoderReader, vocabReader io.Reader) (*Encoder, error) {
 		bpeMerges = append(bpeMerges, [2]string{split[0], split[1]})
 	}
 
-	encoderContents, err := ioutil.ReadAll(encoderReader)
+	encoderContents, err := io.ReadAll(encoderReader)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read encoder file")
 	}
