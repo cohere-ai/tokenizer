@@ -107,7 +107,7 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.testCase.Name, func(tt *testing.T) {
 			joinedTokens := strings.Join(tc.tokens, "")
-			encoded := encoder.Encode(joinedTokens)
+			encoded, _ := encoder.Encode(joinedTokens)
 
 			require.Len(t, encoded, len(tc.tokens))
 			for i, token := range tc.tokens {

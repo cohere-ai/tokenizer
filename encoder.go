@@ -318,9 +318,9 @@ func replace(wordPieces []string, bigram [2]string) []string {
 	return newWord
 }
 
-func (e *Encoder) Encode(text string) []int64 {
+func (e *Encoder) Encode(text string) ([]int64, []string) {
 	words := WordSplit(text)
-	return e.EncodeWords(words)
+	return e.EncodeWords(words), words
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
