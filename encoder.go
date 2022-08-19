@@ -176,19 +176,20 @@ func (e *Encoder) tokenizerBPE(token string) []string {
 	return wordPieces
 }
 
-func (e *Encoder) EncodeWords(words []string) []int64 {
+func (e *Encoder) EncodeWords(words []string) ([]int64, []string) {
 	bpeTokens := make([]int64, 0, len(words)*2)
+	bpeTokenStrings := make([]string, 0, len(bpeTokens))
 	for _, word := range words {
 		token := unicodeEncode(word)
 		bpeEncoded := e.tokenizerBPE(token)
 		for _, bpeEnc := range bpeEncoded {
 			if _, ok := e.Encoder[bpeEnc]; ok {
 				bpeTokens = append(bpeTokens, e.Encoder[bpeEnc])
+				bpeTokenStrings = append(bpeTokenStrings, unicodeDecode(bpeEnc))
 			}
 		}
 	}
-
-	return bpeTokens
+	return bpeTokens, bpeTokenStrings
 }
 
 func unicodeEncode(word string) string {
@@ -201,6 +202,15 @@ func unicodeEncode(word string) string {
 
 	word = tokenBuffer.String()
 	return word
+}
+
+func unicodeDecode(word string) string {
+	var decodeBuffer bytes.Buffer
+	for _, dt := range word {
+		decodeBuffer.WriteByte(bytesEncoderInverse[dt])
+	}
+
+	return decodeBuffer.String()
 }
 
 func WordSplit(s string) []string {
@@ -320,7 +330,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 
 func (e *Encoder) Encode(text string) ([]int64, []string) {
 	words := WordSplit(text)
-	return e.EncodeWords(words), words
+	return e.EncodeWords(words)
 }
 
 func (e *Encoder) Decode(tokens []int64) string {
