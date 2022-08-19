@@ -107,14 +107,14 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.testCase.Name, func(tt *testing.T) {
 			joinedTokens := strings.Join(tc.tokens, "")
-			encoded, _ := encoder.Encode(joinedTokens)
+			tokenIDs, tokenStrings := encoder.Encode(joinedTokens)
 
-			require.Len(t, encoded, len(tc.tokens))
 			for i, token := range tc.tokens {
-				require.Equal(t, token, encoder.Decode([]int64{encoded[i]}))
+				require.Equal(t, token, encoder.Decode([]int64{tokenIDs[i]}))
+				require.Equal(t, token, tokenStrings[i])
 			}
 
-			require.Equal(t, joinedTokens, encoder.Decode(encoded))
+			require.Equal(t, joinedTokens, encoder.Decode(tokenIDs))
 		})
 	}
 }
