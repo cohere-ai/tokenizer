@@ -21,7 +21,7 @@ const (
 var f embed.FS
 
 var (
-	splitRegex                        = regexp2.MustCompile(`(?i:'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+)`, 0)
+	splitRegex                        = regexp2.MustCompile(`(?:'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+)`, 0)
 	bytesEncoder, bytesEncoderInverse = bytesToUnicode()
 )
 
@@ -330,6 +330,7 @@ func replace(wordPieces []string, bigram [2]string) []string {
 
 func (e *Encoder) Encode(text string) ([]int64, []string) {
 	words := WordSplit(text)
+	fmt.Print(words)
 	return e.EncodeWords(words)
 }
 
