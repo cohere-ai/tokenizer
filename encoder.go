@@ -330,7 +330,6 @@ func replace(wordPieces []string, bigram [2]string) []string {
 
 func (e *Encoder) Encode(text string) ([]int64, []string) {
 	words := WordSplit(text)
-	fmt.Print(words)
 	return e.EncodeWords(words)
 }
 
