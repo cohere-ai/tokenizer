@@ -104,13 +104,13 @@ func TestEncodeDecodeSuccess(t *testing.T) {
 			},
 		},
 		{
-			testCase: TestCase{Name: "upper-case quotes"},
+			testCase: TestCase{Name: "upper-case quotes should not match pre-tokenizer"},
 			tokens: []string{
 				"O", "'", "SH", "E", "AN", " DON", "'", "T", " BE", " BA", "'", "D", " '", "MAN", " YOU", "'", "RE", " CO", "ULD", "'", "VE", " HE", "'", "L", "LP", "ED",
 			},
 		},
 		{
-			testCase: TestCase{Name: "lower-case quotes"},
+			testCase: TestCase{Name: "lower-case quotes should match pre-tokenizer"},
 			tokens: []string{
 				"o", "'s", "he", "an", " don", "'t", " be", " ba", "'d", " '", "man", " you", "'re", " could", "'ve", " he", "'ll", "ped",
 			},
