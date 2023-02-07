@@ -21,7 +21,7 @@ const (
 var f embed.FS
 
 var (
-	splitRegex                        = regexp2.MustCompile(`(?i:'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+)`, 0)
+	splitRegex                        = regexp2.MustCompile(`(?:'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+)`, 0)
 	bytesEncoder, bytesEncoderInverse = bytesToUnicode()
 )
 
